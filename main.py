@@ -8,7 +8,7 @@ pygame.init()
 screen_height = 720
 screen_width = 720
 screen = pygame.display.set_mode((screen_width,screen_height))
-
+pygame.display.set_caption("Project 1")
 
 
 
@@ -104,16 +104,16 @@ class World():
 player = Player(0,screen_height-50)
 
 maped = loadmap('map')
-
+world = World(maped)
 
 #run
 run = True
 while run:
         
         screen.blit(scaled_img,(0,0)) 
-        draw_grid()
-        player.update()       
-      
+     
+        player.update()   
+        world.draw()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -125,4 +125,3 @@ while run:
         pygame.display.update()
 
 pygame.quit()
-print(maped)
