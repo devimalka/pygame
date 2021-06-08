@@ -102,6 +102,9 @@ class World():
                         img_rect.y = row_count *tile_size 
                         tile = (img,img_rect)
                         self.tile_list.append(tile)
+                        col_count +=1
+                        
+            row_count += 1
                 
     def draw(self):
         for tile in self.tile_list:
