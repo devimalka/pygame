@@ -74,8 +74,7 @@ class Player():
         if self.isjump:
             py = self.vel_y
             self.vel_y += 1
-            if self.rect.y >= screen_height - 40:
-                self.rect.y = screen_height - 40
+            if self.vel_y > 15:
                 self.isjump = False
                 self.vel_y = -15
         
