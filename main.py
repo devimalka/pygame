@@ -6,6 +6,7 @@ import Ufunctions
 pygame.init()
 
 
+
 #screen set
 
 screen_width = 800
@@ -48,29 +49,31 @@ mapdata = Ufunctions.loadMap('map')
 class Player():
     def __init__(self,x,y):
         self.player_img = pygame.image.load('img/player.png')
-        self.player_img = pygame.transform.scale(self.player_img,(20,20))
+        self.player_img = pygame.transform.scale(self.player_img,(40,40))
         self.rect = self.player_img.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.isjump = False
         self.vel_y = -15
-        self.v = 5
-        self.m = 1
-        self.check = 0
+        self.width = self.player_img.get_width()
+        self.height = self.player_img.get_height()
+      
 
     def update(self):
         px = 0
         py = 0
         key = pygame.key.get_pressed()
 
+        #movement for keypresses
         if key[K_LEFT]:
-            px -= 1
+            px -= 5
         if key[K_RIGHT]:
-            px +=1
+            px +=5
         if self.isjump == False:
             if key[K_SPACE]:
                 self.isjump = True
                
+        #player jump       
         if self.isjump:
             py = self.vel_y
             self.vel_y += 1
@@ -79,12 +82,20 @@ class Player():
                 self.vel_y = -15
         
     
-        
-        
+        #collison detection
+        for tile in world.tile_list:
+            if tile[1].colliderect(self.rect.x+px ,self.rect.y , self.width,self.height):
+                px = 0
+            if tile[1].colliderect(self.rect.x,self.rect.y+py , self.width,self.height):
+                if self.vel_y < 0:
+                    py = tile[1].bottom - self.rect.top
+                elif self.vel_y >= 0:
+                    py = tile[1].top - self.rect.bottom
        
         self.rect.x += px
         self.rect.y += py
-        screen.blit(self.player_img,(self.rect.x,self.rect.y))
+        screen.blit(self.player_img,self.rect)
+        pygame.draw.rect(screen,(255,0,0),self.rect,4)
 
 
 
@@ -105,14 +116,15 @@ class World():
                         img_rect.y = row_count *tile_size 
                         tile = (img,img_rect)
                         self.tile_list.append(tile)
-                        col_count +=1
+                    col_count +=1
                         
             row_count += 1
                 
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0],tile[1])
-
+            
+            print(tile)
 
 
 
@@ -120,7 +132,7 @@ class World():
 
 
 # initializing
-player = Player(0,screen_height-40)
+player = Player(0,screen_height-60)
 
 world = World(mapdata)
 
@@ -139,9 +151,11 @@ while run:
     screen.fill(white)
     screen.blit(bg_img,(0,0))
     
-    draw()
+    
     world.draw()
     player.update()
+  
+        
     
 
 
