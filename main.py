@@ -1,4 +1,5 @@
 import pygame
+from pygame import rect
 from pygame.locals import *
 import Ufunctions
 
@@ -52,7 +53,10 @@ class Player():
         self.rect.x = x
         self.rect.y = y
         self.isjump = False
-        self.vel_y = 0
+        self.vel_y = -15
+        self.v = 5
+        self.m = 1
+        self.check = 0
 
     def update(self):
         px = 0
@@ -63,24 +67,24 @@ class Player():
             px -= 1
         if key[K_RIGHT]:
             px +=1
-        if key[K_SPACE]:
-            self.isjump = True
-            self.vel_y = -15
-        
-        
-
-        #add gravity
-        if self.isjump == True:
-            self.vel_y +=1
-            if self.vel_y >= 10:
-                self.vel_y = 10
+        if self.isjump == False:
+            if key[K_SPACE]:
+                self.isjump = True
+               
+        if self.isjump:
+            py = self.vel_y
+            self.vel_y += 1
+            if self.rect.y >= screen_height - 40:
+                self.rect.y = screen_height - 40
                 self.isjump = False
-
+                self.vel_y = -15
         
+    
+        
+        
+       
         self.rect.x += px
-        self.rect.y += self.vel_y 
-
-   
+        self.rect.y += py
         screen.blit(self.player_img,(self.rect.x,self.rect.y))
 
 
@@ -159,4 +163,3 @@ while run:
 
 
 pygame.quit()
-print(mapdata)
