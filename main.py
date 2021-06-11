@@ -65,50 +65,58 @@ class Player():
         key = pygame.key.get_pressed()
 
         #movement for keypresses
+        if key[K_SPACE] and self.isjump == False:
+            self.isjump = True
+            self.vel_y = -15
+        if key[K_SPACE] == False:
+            self.isjump = False
         if key[K_LEFT]:
             px -= 5
         if key[K_RIGHT]:
             px +=5
-        if self.isjump == False:
-            if key[K_SPACE]:
-                self.isjump = True
-                self.vel_y = -15
+        
        
+
+        for tile in world.tile_list:
+                            if tile[1].colliderect(self.rect.x+px,self.rect.y,self.width,self.height):
+                                px = 0                
+                            
+                            if tile[1].colliderect(self.rect.x,self.rect.y + py,self.width,self.height):
+                                if self.vel_y >0:
+                                    py = self.rect.top - tile[1].bottom 
+                                    
+                                elif self.vel_y <0:
+                                    py = self.rect.bottom - tile[1].top       
                
         #player jump       
-        
-        
+        self.vel_y+=1
+        if self.vel_y > 10:
+            self.vel_y = 10
            
-        if self.isjump:
-            self.vel_y+=1
-            if self.vel_y >= 15:
-                self.vel_y = 0
-                self.isjump = False
-        py += self.vel_y     
-      
+  
+        py += self.vel_y
       
 
-    
+        
         #collison detection
-        for tile in world.tile_list:
-            if tile[1].colliderect(self.rect.x,self.rect.y + py,self.width,self.height):
-                if self.vel_y >0:
-                    py = self.rect.top - tile[1].bottom 
-                elif self.vel_y <0:
-                    py = self.rect.bottom - tile[1].top
-
-            if tile[1].colliderect(self.rect.x+px,self.rect.y,self.width,self.height):
-                px = 0                
-               
+      
+            
+            
        
         self.rect.x += px
         self.rect.y += py
+
+
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
             py = 0
+
+      
+                                
+            
         screen.blit(self.player_img,self.rect)
         pygame.draw.rect(screen,(255,0,0),self.rect,4)
-        print(self.rect.x,self.rect.y)
+       
 
 
 
