@@ -54,7 +54,7 @@ class Player():
         self.rect.x = x
         self.rect.y = y
         self.isjump = False
-        self.vel_y = -15
+        self.vel_y = 0
         self.width = self.player_img.get_width()
         self.height = self.player_img.get_height()
       
@@ -72,30 +72,43 @@ class Player():
         if self.isjump == False:
             if key[K_SPACE]:
                 self.isjump = True
+                self.vel_y = -15
+       
                
         #player jump       
-        if self.isjump:
-            py = self.vel_y
-            self.vel_y += 1
-            if self.vel_y > 15:
-                self.isjump = False
-                self.vel_y = -15
         
+        
+           
+        if self.isjump:
+            self.vel_y+=1
+            if self.vel_y >= 15:
+                self.vel_y = 0
+                self.isjump = False
+        py += self.vel_y     
+      
+      
+
     
         #collison detection
         for tile in world.tile_list:
-            if tile[1].colliderect(self.rect.x+px ,self.rect.y , self.width,self.height):
-                px = 0
-            if tile[1].colliderect(self.rect.x,self.rect.y+py , self.width,self.height):
-                if self.vel_y < 0:
-                    py = tile[1].bottom - self.rect.top
-                elif self.vel_y >= 0:
-                    py = tile[1].top - self.rect.bottom
+            if tile[1].colliderect(self.rect.x,self.rect.y + py,self.width,self.height):
+                if self.vel_y >0:
+                    py = self.rect.top - tile[1].bottom 
+                elif self.vel_y <0:
+                    py = self.rect.bottom - tile[1].top
+
+            if tile[1].colliderect(self.rect.x+px,self.rect.y,self.width,self.height):
+                px = 0                
+               
        
         self.rect.x += px
         self.rect.y += py
+        if self.rect.bottom > screen_height:
+            self.rect.bottom = screen_height
+            py = 0
         screen.blit(self.player_img,self.rect)
         pygame.draw.rect(screen,(255,0,0),self.rect,4)
+        print(self.rect.x,self.rect.y)
 
 
 
@@ -124,7 +137,7 @@ class World():
         for tile in self.tile_list:
             screen.blit(tile[0],tile[1])
             
-            print(tile)
+          
 
 
 
