@@ -46,6 +46,34 @@ mapdata = Ufunctions.loadMap('map')
 
 #classes
 
+
+class World():
+    def __init__(self,data):
+        self.tile_list = []
+       
+        grass_img = pygame.image.load('img\grass.png')
+
+        row_count=0
+        for row in data:
+            col_count = 0
+            for tile in row:
+                    if tile == 1:
+                        img = pygame.transform.scale(grass_img,(tile_size,tile_size ))
+                        img_rect = img.get_rect()
+                        img_rect.x = col_count * tile_size
+                        img_rect.y = row_count *tile_size 
+                        tile = (img,img_rect)
+                        self.tile_list.append(tile)
+                    col_count +=1
+                        
+            row_count += 1
+                
+    def draw(self):
+        for tile in self.tile_list:
+            screen.blit(tile[0],tile[1])
+
+
+
 class Player():
     def __init__(self,x,y):
         self.player_img = pygame.image.load('img/player.png')
@@ -77,29 +105,24 @@ class Player():
         
        
 
-        for tile in world.tile_list:
-                            if tile[1].colliderect(self.rect.x+px,self.rect.y,self.width,self.height):
-                                px = 0                
-                            
-                            if tile[1].colliderect(self.rect.x,self.rect.y + py,self.width,self.height):
-                                if self.vel_y >0:
-                                    py = self.rect.top - tile[1].bottom 
-                                    
-                                elif self.vel_y <0:
-                                    py = self.rect.bottom - tile[1].top       
+           
                
         #player jump       
         self.vel_y+=1
         if self.vel_y > 10:
             self.vel_y = 10
-           
-  
         py += self.vel_y
-      
 
-        
-        #collison detection
-      
+        for tile in world.tile_list:
+           if tile[1].colliderect(self.rect.x + px , self.rect.y , self.width, self.height):
+               px = 0
+
+           if tile[1].colliderect(self.rect.x, self.rect.y + py, self.width, self.height):
+               if self.vel_y < 0:
+                   py = tile[1].bottom - self.rect.top
+               elif self.vel_y >= 0:
+                   py = tile[1].top - self.rect.bottom
+
             
             
        
@@ -120,30 +143,7 @@ class Player():
 
 
 
-class World():
-    def __init__(self,data):
-        self.tile_list = []
-       
-        grass_img = pygame.image.load('img\grass.png')
 
-        row_count=0
-        for row in data:
-            col_count = 0
-            for tile in row:
-                    if tile == 1:
-                        img = pygame.transform.scale(grass_img,(tile_size,tile_size ))
-                        img_rect = img.get_rect()
-                        img_rect.x = col_count * tile_size
-                        img_rect.y = row_count *tile_size 
-                        tile = (img,img_rect)
-                        self.tile_list.append(tile)
-                    col_count +=1
-                        
-            row_count += 1
-                
-    def draw(self):
-        for tile in self.tile_list:
-            screen.blit(tile[0],tile[1])
             
           
 
