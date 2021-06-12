@@ -55,6 +55,7 @@ mapdata = Ufunctions.loadMap('map')
 
 class Player():
     def __init__(self,x,y):
+        
         self.player_img = pygame.image.load('img/player.png')
         self.player_img = pygame.transform.scale(self.player_img,(40,40))
         self.rect = self.player_img.get_rect()
@@ -74,10 +75,11 @@ class Player():
         #movement for keypresses
         if key[K_SPACE] and self.isjump == False:
             self.isjump = True
+          
             self.vel_y = -15
             pygame.mixer.Sound.play(jump_sound)
-        if key[K_SPACE] == False:
-            self.isjump = False
+        
+      
         if key[K_LEFT]:
             px -= 5
         if key[K_RIGHT]:
@@ -87,11 +89,28 @@ class Player():
 
            
                
-        #player jump       
-        self.vel_y+=1
-        if self.vel_y > 10:
-            self.vel_y = 10
-        py += self.vel_y
+        #player jump
+       
+        if self.isjump:
+            if self.vel_y >= 15:
+                self.isjump=False
+                self.vel_y = 15
+            else:    
+                self.vel_y+=1
+
+
+        py = self.vel_y  
+       
+       
+            
+            
+     
+       
+      
+
+
+                         
+     
 
         for tile in world.tile_list:
            if tile[1].colliderect(self.rect.x + px , self.rect.y , self.width, self.height):
